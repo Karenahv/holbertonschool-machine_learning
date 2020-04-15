@@ -15,13 +15,13 @@ def size_matrix(matrix, size):
 
 
 def matrix_shape(matrix):
-    """ return shape of a matrix"""
+    """return shape of a matrix"""
     size = []
     return size_matrix(matrix, size)
 
 
 def add_matrices(mat1, mat2):
-    """ """
+    """add two matrix"""
     size1 = matrix_shape(mat1)
     size2 = matrix_shape(mat2)
     if size1 == size2:
