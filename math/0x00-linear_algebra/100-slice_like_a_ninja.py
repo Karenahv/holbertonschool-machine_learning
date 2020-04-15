@@ -3,13 +3,14 @@
 
 
 def np_slice(matrix, axes={}):
-    """slice like a ninja"""
-    for key in axes:
-        axe=key
-    values = axes[axe]
-    value1 = values[0]
-    value2 = values[1]
-    if axe == 1:
-        mat = matrix[:, value1:value2]
-        return mat
-    return None
+    """Slice like a ninja"""
+    result = matrix[:]
+    final_slice = []
+    for axe in range(matrix.ndim):
+        value = axes.get(axe, None)
+        if value is not None:
+            final_slice.append(slice(*value))
+        else:
+            final_slice.append(slice(value))
+
+    return result[tuple(final_slice)]
