@@ -3,7 +3,7 @@
 
 
 def cat_arrays(arr1, arr2):
-    """ """
+    """concatenates two arrays """
     result = []
     for item in arr1:
         result.append(item)
