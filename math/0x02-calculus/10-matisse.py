@@ -9,6 +9,9 @@ def poly_derivative(poly):
         return None
     if(len(poly) == 1):
         return [0]
+    for elem in poly:
+        if(type(elem) is not int and type(elem) is not float):
+            return None
     if type(poly) is list:
         for i in range(1, len(poly)):
             arr.append(i*poly[i])
