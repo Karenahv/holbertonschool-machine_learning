@@ -4,8 +4,8 @@
 
 def summation_i_squared(n):
     """summation i """
-    i = 1
-    sum = 0
-    for i in range(n + 1):
-        sum = sum + i**2
-    return sum
+    if n is None or n < 1:
+        return None
+    res = list(map(lambda x: x**2, list(range(1, n+1))))
+    res = sum(res)
+    return res
