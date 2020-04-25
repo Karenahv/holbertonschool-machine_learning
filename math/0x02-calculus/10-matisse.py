@@ -5,7 +5,7 @@
 def poly_derivative(poly):
     """poli derivate"""
     arr = []
-    if poly is None or len(poly) == 0:
+    if poly is None or len(poly) == 0 or poly == []:
         return None
     if(len(poly) == 1):
         return [0]
