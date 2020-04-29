@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ class poisson"""
 
-# Euler
+
 e = 2.7182818285
 
 
@@ -17,7 +17,7 @@ class Poisson():
             if isinstance(data, list):
                 if (len(data) > 1):
                     self.data = data
-                    self.lambtha = sum(self.data)/len(self.data)
+                    self.lambtha = float(sum(self.data)/len(self.data))
                 else:
                     raise ValueError("data must contain multiple values")
             else:
