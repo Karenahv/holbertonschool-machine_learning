@@ -49,13 +49,16 @@ class Neuron():
     def evaluate(self, X, Y):
         """neuron performing binary clasification"""
         output_neuron = self.forward_prop(X)
-        evaluation = np.where(output_neuron >= 0.5, 1, 0)
+        evaluation = np.array([1 if i >= 0.5 else 0 for i in output_neuron[0]])
         error = self.cost(Y, output_neuron)
         return (evaluation, error)
 
     def gradient_descent(self, X, Y, A, alpha=0.05):
         """ Gradient descent"""
         m = len(X[0])
+        """1 partial derivative of 
+        our loss function with respect to the 
+        final output value ŷ: A — Y ."""
         dy_hat = A - Y
         dw = (1 / float(m)) * np.matmul(X, dy_hat.transpose())
         db = (1 / float(m)) * np.sum(dy_hat)

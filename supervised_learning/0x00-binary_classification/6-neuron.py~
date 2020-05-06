@@ -49,7 +49,7 @@ class Neuron():
     def evaluate(self, X, Y):
         """neuron performing binary clasification"""
         output_neuron = self.forward_prop(X)
-        evaluation = np.where(output_neuron >= 0.5, 1, 0)
+        evaluation = np.array([1 if i >= 0.5 else 0 for i in output_neuron[0]])
         error = self.cost(Y, output_neuron)
         return (evaluation, error)
 
@@ -61,3 +61,20 @@ class Neuron():
         db = (1 / float(m)) * np.sum(dy_hat)
         self.__W = self.__W - (alpha * dw.transpose())
         self.__b = self.__b - (alpha * db)
+
+    def train(self, X, Y, iterations=5000, alpha=0.05):
+        """ trains neuron"""
+        if not isinstance(iterations, int):
+            raise TypeError("iterations must be an integer")
+        if iterations < 1:
+            raise ValueError("iterations must be a positive integer")
+        if not isinstance(alpha, float):
+            raise TypeError("alpha must be a float")
+        if alpha <= 0:
+            raise ValueError("alpha must be positive")
+        for i in range(iterations):
+            self.forward_prop(X)
+            self.gradient_descent(X, Y, self.__A, alpha)
+        return self.evaluate(X, Y)
+            
+            
