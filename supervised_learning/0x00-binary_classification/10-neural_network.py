@@ -65,5 +65,5 @@ class NeuralNetwork():
         matmult_x_y = np.matmul(self.__W1, X)
         self.__A1 = 1 / (1 + np.exp(-matmult_x_y - self.__b1))
         matmult_a1_w2 = np.matmul(self.__W2, self.__A1)
-        self.__A2 = 1 / (1 + np.exp(-matmult_a1_w2 - self.__b2)) 
+        self.__A2 = 1 / (1 + np.exp(-matmult_a1_w2 - self.__b2))
         return (self.__A1, self.__A2)
