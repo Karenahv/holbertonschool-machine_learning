@@ -51,7 +51,7 @@ class Neuron():
     def evaluate(self, X, Y):
         """neuron performing binary clasification"""
         output_neuron = self.forward_prop(X)
-        evaluation = np.array([1 if i >= 0.5 else 0 for i in output_neuron[0]])
+        evaluation = np.where(output_neuron >= 0.5, 1, 0)
         error = self.cost(Y, output_neuron)
         return (evaluation, error)
 
