@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Neural Network"""
+"""deep Neural Network"""
 import numpy as np
 
 
 class DeepNeuralNetwork():
-    """Defines a neural network"""
+    """Defines a deep neural network"""
 
     def __init__(self, nx, layers):
         """ Class constructor.
@@ -24,14 +24,14 @@ class DeepNeuralNetwork():
         for i in range(len(layers)):
             if (type(layers[i]) is not int or layers[i] < 1):
                 raise TypeError("layers must be a list of positive integers")
-            key_w = "W{}".format(i + 1)
+            key_W = "W{}".format(i + 1)
             key_b = "b{}".format(i + 1)
             if i == 0:
-                w = np.random.randn(layers[i], nx)
-                self.weights[key_w] = w
+                w = np.random.randn(layers[i], nx) * np.sqrt(2 / nx)
+                self.weights[key_W] = w
             else:
-                temp = np.sqrt(2 / layers[i - 1])
-                w = np.random.randn(layers[i], layers[i - 1]) * temp
-                self.weights[key_w] = w
+                aux = np.sqrt(2 / layers[i - 1])
+                w = np.random.randn(layers[i], layers[i - 1]) * aux
+                self.weights[key_W] = w
             b = np.zeros((layers[i], 1))
             self.weights[key_b] = b
