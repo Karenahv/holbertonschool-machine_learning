@@ -88,33 +88,34 @@ class DeepNeuralNetwork():
 
     def gradient_descent(self, Y, cache, alpha=0.05):
         """ Calculates one pass of gradient descent on the network """
+        weights_copy = self.__weights.copy()
+
         m = Y.shape[1]
-        weights_cpy = self.__weights.copy()
+
         A3 = self.__cache['A' + str(self.__L)]
         A2 = self.__cache['A' + str(self.__L - 1)]
-        W3 = weights_cpy['W' + str(self.__L)]
-        b3 = weights_cpy['b' + str(self.__L)]
-        dy_hat = A3 - Y
-        dz_list = {}
-        dz_list['dz' + str(self.__L)] = dy_hat
-        dW = np.matmul(A2, dy_hat.T)
-        dW = dW / m
-        db = (1/float(m)) * dy_hat.sum(axis=1, keepdims=True)
-        self.__weights['W' + str(self.__L)] = dW - (alpha * dW).T
-        self.__weights['b' + str(self.__L)] = db - (alpha * db)
+        W3 = weights_copy['W' + str(self.__L)]
+        b3 = weights_copy['b' + str(self.__L)]
+        dz_List = {}
+        dz3 = A3 - Y
 
-        for i in range((self.__L - 1), 0, -1):
-            a_curr = self.__cache['A' + str(i)]
-            a_bef = self.__cache['A' + str(i - 1)]
-            w_curr = weights_cpy['W' + str(i)]
-            w_next = weights_cpy['W' + str(i + 1)]
-            b_curr = weights_cpy['b' + str(i)]
-            dz1 = np.matmul(w_next.transpose(), dz_list['dz' + str(i + 1)])
-            dz2 = a_curr * (1 - a_curr)
+        dz_List['dz'+str(self.__L)] = dz3
+        dw3 = (1/m) * np.matmul(A2, dz3.T)
+        db3 = (1/m) * np.sum(dz3, axis=1, keepdims=True)
+        self.__weights['W'+str(self.__L)] = W3 - (alpha * dw3).T
+        self.__weights['b'+str(self.__L)] = b3 - (alpha * db3)
+
+        for i in range(self.__L - 1, 0, -1):
+            A_curr = self.__cache['A'+str(i)]
+            A_bef = self.__cache['A'+str(i - 1)]
+            W_curr = weights_copy['W'+str(i)]
+            W_next = weights_copy['W'+str(i + 1)]
+            b_curr = weights_copy['b'+str(i)]
+            dz1 = np.matmul(W_next.T, dz_List['dz'+str(i + 1)])
+            dz2 = A_curr * (1 - A_curr)
             dz = dz1 * dz2
-            dW = (1/float(m)) * np.matmul(a_bef, dz.transpose())
-            db = (1/float(m)) * dz.sum(axis=1, keepdims=True)
-
-            dz_list['dz' + str(i)] = dz
-            self.__weights['W' + str(i)] = w_curr - (alpha * dW).transpose()
-            self.__weights['b' + str(i)] = b_curr - (alpha * db)
+            dw = (1/m) * np.matmul(A_bef, dz.T)
+            db = (1/m) * np.sum(dz, axis=1, keepdims=True)
+            dz_List['dz'+str(i)] = dz
+            self.__weights['W'+str(i)] = W_curr - (alpha * dw).T
+            self.__weights['b'+str(i)] = b_curr - (alpha * db)
