@@ -90,17 +90,18 @@ class DeepNeuralNetwork():
         """ Calculates one pass of gradient descent on the network """
         m = Y.shape[1]
         weights_cpy = self.__weights.copy()
-        A3 = cache['A' + str(self.__L)]
+        A3 = self.__cache['A' + str(self.__L)]
+        A2 = self.__cache['A' + str(self.__L - 1)]
         W3 = weights_cpy['W' + str(self.__L)]
         b3 = weights_cpy['b' + str(self.__L)]
         dy_hat = A3 - Y
         dz_list = {}
         dz_list['dz' + str(self.__L)] = dy_hat
-        dW = np.matmul(dy_hat, cache["A2"].transpose())
+        dW = np.matmul(A2, dy_hat.T)
         dW = dW / m
         db = (1/float(m)) * dy_hat.sum(axis=1, keepdims=True)
-        self.__weights['W'+str(self.__L)] = dW - (alpha * dW).T
-        self.__weights['b'+str(self.__L)] = db - (alpha * db)
+        self.__weights['W' + str(self.__L)] = dW - (alpha * dW).T
+        self.__weights['b' + str(self.__L)] = db - (alpha * db)
 
         for i in range((self.__L - 1), 0, -1):
             a_curr = self.__cache['A' + str(i)]
