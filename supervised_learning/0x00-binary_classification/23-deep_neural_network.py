@@ -105,21 +105,21 @@ class DeepNeuralNetwork():
         self.__weights['W'+str(self.__L)] = W3 - (alpha * dw3).T
         self.__weights['b'+str(self.__L)] = b3 - (alpha * db3)
 
-        for index in range(self.__L - 1, 0, -1):
-            A_curr = self.__cache['A'+str(index)]
-            A_bef = self.__cache['A'+str(index - 1)]
-            W_curr = weights_copy['W'+str(index)]
-            W_next = weights_copy['W'+str(index + 1)]
-            b_curr = weights_copy['b'+str(index)]
-            dz1 = np.matmul(W_next.T, dz_List['dz'+str(index + 1)])
+        for i in range(self.__L - 1, 0, -1):
+            A_curr = self.__cache['A'+str(i)]
+            A_bef = self.__cache['A'+str(i - 1)]
+            W_curr = weights_copy['W'+str(i)]
+            W_next = weights_copy['W'+str(i + 1)]
+            b_curr = weights_copy['b'+str(i)]
+            dz1 = np.matmul(W_next.T, dz_List['dz'+str(i + 1)])
             dz2 = A_curr * (1 - A_curr)
             dz = dz1 * dz2
             dw = (1/m) * np.matmul(A_bef, dz.T)
             db = (1/m) * np.sum(dz, axis=1, keepdims=True)
-            dz_List['dz'+str(index)] = dz
-            self.__weights['W'+str(index)] = W_curr - (alpha * dw).T
-            self.__weights['b'+str(index)] = b_curr - (alpha * db)
-
+            dz_List['dz'+str(i)] = dz
+            self.__weights['W'+str(i)] = W_curr - (alpha * dw).T
+            self.__weights['b'+str(i)] = b_curr - (alpha * db)
+            
     def train(self, X, Y, iterations=5000, alpha=0.05):
         """
         Trains the neuron
