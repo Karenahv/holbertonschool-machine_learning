@@ -6,8 +6,8 @@ import numpy as np
 
 def one_hot_decode(one_hot):
     """ hot matrix to labels vector"""
-    if not isinstance(one_hot, np.ndarray):
+    if not isinstance(one_hot, np.ndarray) or len(one_hot) == 0:
         return None
-    if one_hot.size is 0:
+    if len(one_hot.shape) != 2:
         return None
     return np.argmax(one_hot, axis=0)
