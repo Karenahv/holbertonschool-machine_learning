@@ -12,5 +12,4 @@ def create_layer(prev, n, activation):
                             kernel_initializer=init,
                             activation=activation)
     layer_tensor = layer(prev)
-    
     return layer_tensor
