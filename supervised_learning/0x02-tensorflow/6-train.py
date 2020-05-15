@@ -30,7 +30,7 @@ def train(X_train, Y_train, X_valid, Y_valid,
     init = tf.global_variables_initializer()
     with tf.Session() as sess:
         sess.run(init)
-        for iter in range(iterations):
+        for iter in range(iterations + 1):
             cost_train = sess.run(loss, feed_dict={x: X_train, y: Y_train})
             acc_train = sess.run(accuracy, feed_dict={x: X_train, y: Y_train})
             cost_valid = sess.run(loss, feed_dict={x: X_valid, y: Y_valid})
@@ -41,7 +41,8 @@ def train(X_train, Y_train, X_valid, Y_valid,
                 print("\tTraining Accuracy: {}".format(acc_train))
                 print("\tValidation Cost: {}".format(cost_valid))
                 print("\tValidation Accuracy: {}".format(acc_valid))
-            sess.run(train_op, feed_dict={x: X_train, y: Y_train})
+            if iter < iterations:
+                sess.run(train_op, feed_dict={x: X_train, y: Y_train})
         save_path = saver.save(sess, save_path)
     return save_path
     
