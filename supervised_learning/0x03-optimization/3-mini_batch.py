@@ -35,8 +35,8 @@ def train_mini_batch(X_train, Y_train, X_valid,
             cost_train = sess.run(loss,  feed_dict=feed_dict_train)
             acc_train = sess.run(accuracy,  feed_dict=feed_dict_train)
             cost_valid = sess.run(loss,  feed_dict=feed_dict_valid)
-            acc_valid = sess.run(accuracy, feed_dict= feed_dict_valid)
-        
+            acc_valid = sess.run(accuracy, feed_dict=feed_dict_valid)
+
             print("After {} epochs:".format(i))
             print("\tTraining Cost: {}".format(cost_train))
             print("\tTraining Accuracy: {}".format(acc_train))
@@ -51,8 +51,9 @@ def train_mini_batch(X_train, Y_train, X_valid,
                     end = j * batch_size
 
                     if end > X_train.shape[0]:
-                        end =  X_train.shape[0]
-                    feed_new = {x: X_shuffled[start, end], y: Y_shuffled[start, end]}
+                        end = X_train.shape[0]
+                    feed_new = {x: X_shuffled[start:end],
+                                y: Y_shuffled[start:end]}
                     sess.run(train_op, feed_dict=feed_new)
                     if j % 100 == 0:
                         cost_batch = sess.run(loss, feed_dict=feed_new)
