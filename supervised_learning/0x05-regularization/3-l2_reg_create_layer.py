@@ -1,14 +1,16 @@
-#!usr/bin/env python3
-"""creates tensorflow layer with l2 regularization"""
-
+#!/usr/bin/env python3
+"""
+Create a Layer with L2 Regularization
+"""
 import tensorflow as tf
 
 
 def l2_reg_create_layer(prev, n, activation, lambtha):
-    """creates tensorflow layer with l2 regularization"""
-    initialize = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
-    reg_weights = tf.contrib.layers.l2_regularizer(lambtha)
+    """
+    creates a tensorflow layer that includes L2 regularization
+    """
+    k_ini = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
+    k_reg = tf.contrib.layers.l2_regularizer(lambtha)
     layer = tf.layers.Dense(name='layer', units=n, activation=activation,
-                            kernel_initializer=initialize,
-                            kernel_regularizer=reg_weights)
+                            kernel_initializer=k_ini, kernel_regularizer=k_reg)
     return layer(prev)
