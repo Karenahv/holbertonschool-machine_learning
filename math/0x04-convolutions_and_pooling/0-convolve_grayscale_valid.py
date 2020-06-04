@@ -6,11 +6,11 @@ import numpy as np
 
 def convolve_grayscale_valid(images, kernel):
     """""performs a valid convolution on grayscale images"""
-    m = len(images)
-    h = len(images[0])
-    w = len(images[1])
-    hk = len(kernel)
-    wk = len(kernel[0])
+    m = images.shape[0]
+    h = images.shape[1]
+    w = images.shape[1]
+    hk = kernel.shape[0]
+    wk = kernel.shape[1]
     h_final = (h - hk) + 1
     w_final = (w - wk) + 1
     array = np.zeros((m, h_final, w_final))
