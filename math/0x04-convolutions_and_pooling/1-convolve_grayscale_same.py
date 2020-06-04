@@ -16,9 +16,9 @@ def convolve_grayscale_same(images, kernel):
     ph = int((hk - 1) / 2)
     pw = int((wk - 1) / 2)
     if hk % 2 == 0:
-        ph = int(kh/2)
+        ph = int(hk/2)
     if wk % 2 == 0:
-        pw = int(kw/2)
+        pw = int(wk/2)
     new_img = np.pad(images, pad_width=((0, 0), (ph, ph), (pw, pw)),
                      mode='constant', constant_values=0)
     h_final = h_final + 2 * ph
