@@ -25,7 +25,7 @@ def convolve_channels(images, kernel, padding='same', stride=(1, 1)):
         ph = 0
         pw = 0
     if padding == 'same' or isinstance(padding, tuple):
-        images = np.pad(images, pad_width=((0, 0), (ph, ph), (pw, pw)),
+        images = np.pad(images, pad_width=((0, 0), (ph, ph), (pw, pw), (0, 0)),
                         mode='constant', constant_values=0)
     h_final = int(((h+2*ph-kh)/sh) + 1)
     w_final = int(((w+2*pw-kw)/sw) + 1)
