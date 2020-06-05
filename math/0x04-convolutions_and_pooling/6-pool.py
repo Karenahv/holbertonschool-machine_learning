@@ -22,11 +22,13 @@ def pool(images, kernel_shape, stride, mode='max'):
     for j in range(h_final):
         for i in range(w_final):
             if mode == 'max':
-                array[img, j, i] = (np.max(images[img, j*sh:(kh+(j*sh)),
+                array[img, j, i] = (np.max(images[img,
+                                                  j*sh:(kh+(j*sh)),
                                                   i*sw:(kw+(i*sw))],
                                            axis=(1, 2)))
             if mode == 'avg':
-                array[img, j, i] = (np.mean(images[img, j*sh:(kh+(j*sh)),
+                array[img, j, i] = (np.mean(images[img,
+                                                   j*sh:(kh+(j*sh)),
                                                    i*sw:(kw+(i*sw))],
                                             axis=(1, 2)))
     return array
