@@ -10,7 +10,7 @@ def lenet5(x, y):
     init = tf.contrib.layers.variance_scaling_initializer()
     # Step 1: Convolution
     layer_convo1 = tf.layers.Conv2D(filters=6, kernel_size=5,
-                                    activation='relu',
+                                    activation=tf.nn.relu,
                                     padding="same",
                                     kernel_initializer=init)(x)
     # Step 2: Max Pooling Layer
@@ -18,7 +18,7 @@ def lenet5(x, y):
                                                  strides=(2, 2))(layer_convo1)
     # step 3: Convolution
     layer_convo2 = tf.layers.Conv2D(filters=16, kernel_size=5,
-                                    activation='relu',
+                                    activation=tf.nn.relu,
                                     padding="valid",
                                     kernel_initializer=init)(layer_poolmax)
     # step 4: Max pooling 2
@@ -29,11 +29,11 @@ def lenet5(x, y):
 
     # step 5: Fully connected layer 120 nodes
     layer_fc = tf.layers.Dense(units=120,
-                               activation='relu',
+                               activation=tf.nn.relu,
                                kernel_initializer=init)(layer_flat)
     # step 6: Fully connected layer 84 nodes
     layer_fc2 = tf.layers.Dense(units=84,
-                                activation='relu',
+                                activation=tf.nn.relu,
                                 kernel_initializer=init)(layer_fc)
 
     # step 7: Fully connected softmax output layer with 10 nodes
@@ -55,4 +55,4 @@ def lenet5(x, y):
     compare = tf.math.equal(values, prediction)
     accuracy = tf.math.reduce_mean(tf.cast(compare, tf.float32))
 
-    return tensor_softmax, optimazer, loss, accuracy
+    return tensor_softmax, optimizer, loss, accuracy
