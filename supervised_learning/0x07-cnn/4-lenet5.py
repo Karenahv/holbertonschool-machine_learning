@@ -15,7 +15,7 @@ def lenet5(x, y):
                                     kernel_initializer=init)(x)
     # Step 2: Max Pooling Layer
     layer_poolmax = tf.layers.MaxPooling2D(pool_size=(2, 2),
-                                                 strides=(2, 2))(layer_convo1)
+                                           strides=(2, 2))(layer_convo1)
     # step 3: Convolution
     layer_convo2 = tf.layers.Conv2D(filters=16, kernel_size=5,
                                     activation=tf.nn.relu,
@@ -23,7 +23,7 @@ def lenet5(x, y):
                                     kernel_initializer=init)(layer_poolmax)
     # step 4: Max pooling 2
     layer_poolmax2 = tf.layers.MaxPooling2D(pool_size=(2, 2),
-                                                  strides=(2, 2))(layer_convo2)
+                                            strides=(2, 2))(layer_convo2)
 
     layer_flat = tf.layers.Flatten()(layer_poolmax2)
 
@@ -50,9 +50,9 @@ def lenet5(x, y):
     optimizer = tf.train.AdamOptimizer().minimize(loss)
 
     # Accuracy of the network
-    values = tf.math.argmax(y, 1)
-    prediction = tf.math.argmax(output, 1)
-    compare = tf.math.equal(values, prediction)
-    accuracy = tf.math.reduce_mean(tf.cast(compare, tf.float32))
+    values = tf.argmax(y, 1)
+    prediction = tf.argmax(output, 1)
+    compare = tf.equal(values, prediction)
+    accuracy = tf.reduce_mean(tf.cast(compare, tf.float32))
 
     return tensor_softmax, optimizer, loss, accuracy
