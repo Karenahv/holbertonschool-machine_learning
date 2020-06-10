@@ -36,7 +36,7 @@ def lenet5(x):
                                kernel_initializer=init)(layer_fc)
 
     # step 7: Fully connected softmax output layer with 10 nodes
-    output = tf.layers.Dense(units=10,
+    output = K.layers.Dense(units=10,
                              activation='softmax',
                              kernel_initializer=init)(layer_fc2)
 
