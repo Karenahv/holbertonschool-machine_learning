@@ -14,7 +14,7 @@ def lenet5(x, y):
                                     padding="same",
                                     kernel_initializer=init)(x)
     # Step 2: Max Pooling Layer
-    layer_poolmax = tf.keras.layers.MaxPooling2D(pool_size=(2, 2),
+    layer_poolmax = tf.layers.MaxPooling2D(pool_size=(2, 2),
                                                  strides=(2, 2))(layer_convo1)
     # step 3: Convolution
     layer_convo2 = tf.layers.Conv2D(filters=16, kernel_size=5,
@@ -22,7 +22,7 @@ def lenet5(x, y):
                                     padding="valid",
                                     kernel_initializer=init)(layer_poolmax)
     # step 4: Max pooling 2
-    layer_poolmax2 = tf.keras.layers.MaxPooling2D(pool_size=(2, 2),
+    layer_poolmax2 = tf.layers.MaxPooling2D(pool_size=(2, 2),
                                                   strides=(2, 2))(layer_convo2)
 
     layer_flat = tf.layers.Flatten()(layer_poolmax2)
@@ -55,4 +55,4 @@ def lenet5(x, y):
     compare = tf.math.equal(values, prediction)
     accuracy = tf.math.reduce_mean(tf.cast(compare, tf.float32))
 
-    return (tensor_softmax, optimazer, loss, accuracy)
+    return tensor_softmax, optimazer, loss, accuracy
