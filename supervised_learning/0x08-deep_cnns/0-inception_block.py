@@ -49,7 +49,7 @@ Going Deeper with Convolutions (2014)"""
                                      )(pool_proj)
 
     output = K.layers.concatenate([conv_1x1,
-                          conv_3x3,
-                          conv_5x5,
-                          conv_1x1_bpool])
+                                   conv_3x3,
+                                   conv_5x5,
+                                   conv_1x1_bpool])
     return output
