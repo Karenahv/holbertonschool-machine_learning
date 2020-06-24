@@ -4,13 +4,13 @@ neural network to classify
 the CIFAR 10 dataset"""
 
 import tensorflow.keras as K
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation, Flatten
-from keras.layers import Conv2D, MaxPooling2D
-from keras.applications import vgg16
-from keras.models import Model
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
+from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.applications import vgg16
+from tensorflow.keras.models import Model
 from sklearn.preprocessing import LabelEncoder
-from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
 def get_bottleneck_features(model, input_imgs):
@@ -77,24 +77,9 @@ if __name__ == '__main__':
 
     train_features_vgg = get_bottleneck_features(vgg_model, trainX)
     validation_features_vgg = get_bottleneck_features(vgg_model, testX)
+    
     print('Train Bottleneck Features:', train_features_vgg.shape, 
           '\tValidation Bottleneck Features:', validation_features_vgg.shape)
-
-    input_shape = vgg_model.output_shape[1]
-    model = Sequential()
-    model.add(InputLayer(input_shape=(input_shape,)))
-    model.add(Dense(512, activation='relu', input_dim=input_shape))
-    model.add(Dropout(0.3))
-    model.add(Dense(512, activation='relu'))
-    model.add(Dropout(0.3))
-    model.add(Dense(1, activation='sigmoid'))
-
-    
-    model.compile(loss='binary_crossentropy',
-                  optimizer=optimizers.RMSprop(lr=1e-4),
-                  metrics=['accuracy'])
-
-    model.summary()
 
     train_datagen = ImageDataGenerator(rescale=1./255, zoom_range=0.3, rotation_range=50,
                                    width_shift_range=0.2, height_shift_range=0.2, shear_range=0.2, 
@@ -105,13 +90,27 @@ if __name__ == '__main__':
     train_generator = train_datagen.flow(trainX, train_labels_enc, batch_size=30)
     val_generator = val_datagen.flow(testX, validation_labels_enc, batch_size=20)
 
+    input_shape = vgg_model.output_shape[1]
+
+    model = Sequential()
+    model.add(vgg_model)
+    model.add(Dense(512, activation='relu', input_dim=input_shape))
+    model.add(Dropout(0.3))
+    model.add(Dense(512, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(1, activation='sigmoid'))
+    
+    model.compile(loss='binary_crossentropy',
+                  optimizer=optimizers.RMSprop(lr=2e-5),
+                  metrics=['accuracy'])
+    
     history = model.fit_generator(train_generator, steps_per_epoch=100, epochs=100,
-                                  validation_data=val_generator, validation_steps=50, 
-                                  verbose=1) 
+                                 validation_data=val_generator, validation_steps=50, 
+                                 verbose=1)         
     model.save('cifar10.h5')
     print('Saved trained model in the current directory')
 
     # Score trained model.
-    scores = model.evaluate(testX, testY verbose=1)
+    scores = model.evaluate(testX, testY, verbose=1)
     print('Test loss:', scores[0])
     print('Test accuracy:', scores[1])
