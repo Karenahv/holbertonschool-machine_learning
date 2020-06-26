@@ -62,7 +62,7 @@ if __name__ == '__main__':
         input_shape=(32, 32, 3),
         classes=y_train.shape[1])
 
-    for layer in model_vgg19.layers[0:3]:
+    for layer in base_model_vgg19.layers[0:3]:
         layer.trainable = False
 
     sgradient_d = K.optimizers.SGD(lr=learn_rate,
