@@ -1,116 +1,102 @@
 #!/usr/bin/env python3
-"""python script that trains a convolutional
-neural network to classify
-the CIFAR 10 dataset"""
+"""Transfer learning"""
 
 import tensorflow.keras as K
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
-from tensorflow.keras.layers import Conv2D, MaxPooling2D
-from tensorflow.keras.applications import vgg16
-from tensorflow.keras.models import Model
-from sklearn.preprocessing import LabelEncoder
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import numpy as np
+import matplotlib.pyplot as plt
 
-
-def get_bottleneck_features(model, input_imgs):
-    features = model.predict(input_imgs, verbose=0)
-    return features
 
 def preprocess_data(X, Y):
-    """pre-processes data
+    """
+    This method pre-processes the data
+    for the model
+    """
+    X_p = K.applications.vgg19.preprocess_input(X)
+    Y_p = K.utils.to_categorical(Y, num_classes=10)
+    return (X_p, Y_p)
 
-    @X: numpy.ndarray of shape (m, 32, 32, 3) containing the CIFAR 10 data,
-    where m is the number of data points
-    @Y: numpy.ndarray of shape (m,) containing the CIFAR 10 labels for X
-    Returns: X_p, Y_p
-    X_p: numpy.ndarray containing the preprocessed X
-    Y_p: numpy.ndarray containing the preprocessed Y"""
-    
-    X_p = K.applications.vgg16.preprocess_input(
-    X, data_format=None)
-    Y_p = K.utils.to_categorical(
-    y, num_classes=10, dtype='float32')
-
-    return X_P, Y_P
 
 if __name__ == '__main__':
-    """Transfer learning VGG16, trains the model and save it
-    in a file"""
 
-    batch_size = 32
-    epochs = 30
-    # load dataset
-    (trainX, trainY), (testX, testY) = cifar10.load_data()
+    """
+    Transfer learning of the model VGG19
+    and save it in a file cifar10.h5
+    """
+    (x_train, y_train), (x_test, y_test) = K.datasets.cifar10.load_data()
 
-    trainY = to_categorical(trainY)
-    testY = to_categorical(testY)
+    learn_rate = .001
+    batch_size = 100
+    epochs = 50
 
-    trainX = tf.keras.applications.vgg16.preprocess_input(trainX,
-                                                          data_format=None)
-    testX = tf.keras.applications.vgg16.preprocess_input(testX,
-                                                         data_format=None)
+    x_train = K.applications.vgg19.preprocess_input(x_train)
+    x_test = K.applications.vgg19.preprocess_input(x_test)
 
-    trainX = x_train.astype('float32')
-    testX = x_test.astype('float32')
-    trainX /= 255
-    testX /= 255
+    y_train = K.utils.to_categorical(y_train, 10)
+    y_test = K.utils.to_categorical(y_test, 10)
 
-    vgg = vgg16.VGG16(include_top=False,
-                      weights='imagenet',
-                      input_shape=(32, 32, 3),
-                      classes=trainY.shape[1])
+    train_datagen = K.preprocessing.image.ImageDataGenerator(rescale=1./255, 
+                                                        zoom_range=0.3,
+                                                        rotation_range=50,
+                                                        width_shift_range=0.2,
+                                                        height_shift_range=0.2,
+                                                        shear_range=0.2,
+                                                        horizontal_flip=True,
+                                                        fill_mode='nearest')
 
-    output = vgg.layers[-1].output
-    output = K.layers.Flatten()(output)
-    vgg_model = Model(vgg.input, output)
+    val_datagen = K.preprocessing.image.ImageDataGenerator(rescale=1./255)
 
-    vgg_model.trainable = False
 
-    for layer in vgg_model.layers:
+    test_datagen = K.preprocessing.image.ImageDataGenerator(rotation_range=2,
+                                                            horizontal_flip=True,
+                                                            zoom_range=.1) 
+    train_datagen.fit(x_train)
+    test_datagen.fit(x_test)
+
+    reduce_learning_rate = K.callbacks.ReduceLROnPlateau(monitor='val_accuracy',
+                                                         factor=.01,
+                                                         patience=3,
+                                                         min_lr=1e-5)
+    base_model_vgg19 = K.applications.VGG16(
+        include_top=False,
+        weights='imagenet',
+        input_shape=(32, 32, 3),
+        classes=y_train.shape[1])
+
+    for layer in model_vgg19.layers[0:3]:
         layer.trainable = False
 
-    le = LabelEncoder()
-    le.fit(train_labels)
-    train_labels_enc = le.transform(trainY)
-    validation_labels_enc = le.transform(testY)
-
-    train_features_vgg = get_bottleneck_features(vgg_model, trainX)
-    validation_features_vgg = get_bottleneck_features(vgg_model, testX)
+    sgradient_d = K.optimizers.SGD(lr=learn_rate,
+                                   momentum=.9,
+                                   nesterov=False)
     
-    print('Train Bottleneck Features:', train_features_vgg.shape, 
-          '\tValidation Bottleneck Features:', validation_features_vgg.shape)
+    model_vgg19 = K.Sequential()
+    model_vgg19.add(base_model_vgg19)
+    model_vgg19.add(K.layers.Flatten())
+    model_vgg19.add(K.layers.Dense(1024, activation=('relu'), input_dim=512))
+    model_vgg19.add(K.layers.Dense(512, activation=('relu')))
+    model_vgg19.add(K.layers.Dense(256, activation=('relu')))
+    model_vgg19.add(K.layers.Dense(128, activation=('relu')))
+    model_vgg19.add(K.layers.Dense(10, activation=('softmax')))
 
-    train_datagen = ImageDataGenerator(rescale=1./255, zoom_range=0.3, rotation_range=50,
-                                   width_shift_range=0.2, height_shift_range=0.2, shear_range=0.2, 
-                                   horizontal_flip=True, fill_mode='nearest')
+    model_vgg19.summary()
 
-    val_datagen = ImageDataGenerator(rescale=1./255)
+    model_vgg19.compile(optimizer=sgradient_d,
+                        loss='categorical_crossentropy',
+                        metrics=['accuracy'])
+
+
+    history = model_vgg19.fit_generator(train_datagen.flow(x_train,
+                                                           y_train,
+                                                           batch_size=batch_size),
+                                        epochs=epochs,
+                                        steps_per_epoch=x_train.shape[0]//batch_size,
+                                        validation_data=val_datagen.flow(x_test,
+                                                                         y_test,
+                                                                         batch_size=batch_size),
+                                        validation_steps=250,
+                                        callbacks=[reduce_learning_rate], verbose=1)
     
-    train_generator = train_datagen.flow(trainX, train_labels_enc, batch_size=30)
-    val_generator = val_datagen.flow(testX, validation_labels_enc, batch_size=20)
-
-    input_shape = vgg_model.output_shape[1]
-
-    model = Sequential()
-    model.add(vgg_model)
-    model.add(Dense(512, activation='relu', input_dim=input_shape))
-    model.add(Dropout(0.3))
-    model.add(Dense(512, activation='relu'))
-    model.add(Dropout(0.3))
-    model.add(Dense(1, activation='sigmoid'))
-    
-    model.compile(loss='binary_crossentropy',
-                  optimizer=optimizers.RMSprop(lr=2e-5),
-                  metrics=['accuracy'])
-    
-    history = model.fit_generator(train_generator, steps_per_epoch=100, epochs=100,
-                                 validation_data=val_generator, validation_steps=50, 
-                                 verbose=1)         
-    model.save('cifar10.h5')
-    print('Saved trained model in the current directory')
-
-    # Score trained model.
-    scores = model.evaluate(testX, testY, verbose=1)
-    print('Test loss:', scores[0])
-    print('Test accuracy:', scores[1])
+    plt.plot(history.history['accuracy'], linestyle='dashed')
+    plt.plot(history.history['val_accuracy'])
+    plt.show()
+    model_vgg19.save('cifar10.h5')
