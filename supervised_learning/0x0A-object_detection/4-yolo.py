@@ -116,7 +116,7 @@ class Yolo:
         return (np.delete(filtered_boxes, del_idxs, axis=0),
                 np.delete(box_classes, del_idxs),
                 np.delete(box_scores, del_idxs))
-                
+
     @staticmethod
     def load_images(folder_path):
         """load images"""
