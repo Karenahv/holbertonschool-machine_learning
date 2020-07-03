@@ -23,6 +23,9 @@ class Yolo:
         return 1 / (1 + np.exp(-x))
 
     def process_outputs(self, outputs, image_size):
+        """
+        Process Outputs
+        """
         boxes = []
         for i in range(len(outputs)):
             tx, ty, _, _ = np.split(outputs[i], (2, 4, 5), axis=-1)
