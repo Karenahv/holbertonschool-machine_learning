@@ -30,3 +30,16 @@ class FaceAlign:
             return rectangle
         except RuntimeError:
             return None
+
+    def find_landmarks(self, image, detection):
+        """finds facial landmarks"""
+        # initialize the list of (x, y)-coordinates
+        coords = np.zeros((68, 2), dtype="int")
+        # Find landmark points in image
+        landmark = self.shape_predictor(image, detection)
+        if landmark:
+            for i in range(0, 68):
+                coords[i] = (landmark.part(i).x, landmark.part(i).y)
+        else:
+            coords = None
+        return coords

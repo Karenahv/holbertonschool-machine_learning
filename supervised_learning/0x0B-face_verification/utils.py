@@ -27,7 +27,7 @@ def load_images(images_path, as_array=True):
 
 def load_csv(csv_path, params={}):
     """ loads the content of a csv file as
-        a lists of list"""
+            a lists of list"""
     csv_values = []
     with open(csv_path, encoding="utf-8") as file:
         sreader = csv.reader(file, params)
