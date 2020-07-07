@@ -22,7 +22,7 @@ class FaceAlign:
             rects = self.detector(image, 1)
             if len(rects) == 0:
                 rectangle = dlib.rectangle(0, 0, image.shape[1],
-                                           image.shaep[0])
+                                           image.shape[0])
             else:
                 for (i, rect) in enumerate(rects):
                     if rect.area() > max:
