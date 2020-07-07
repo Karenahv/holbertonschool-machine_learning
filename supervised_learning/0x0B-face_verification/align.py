@@ -43,3 +43,23 @@ class FaceAlign:
         else:
             coords = None
         return coords
+
+    def align(self, image, landmark_indices, anchor_points, size=96):
+        """aligns an image for face verification"""
+        # Detect face in image and find landmarks
+        box = self.detect(image)
+        landmarks = self.find_landmarks(image, box)
+
+        # Select three points in the landmarks(Eyes and nose)
+        points_in_image = landmarks[landmark_indices]
+        points_in_image = points_in_image.astype('float32')
+        # Generate the normalized output size
+        output_size = anchor_points * size
+
+        # Calculates the 2 \times 3 matrix of an affine transform
+        affine_transf = cv2.getAffineTransform(points_in_image, output_size)
+
+        # Transforms the source image using the specified matrix
+        transformed_img = cv2.warpAffine(image, affine_transf, (size, size))
+
+        return transformed_img
