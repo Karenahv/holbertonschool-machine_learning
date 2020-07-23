@@ -51,22 +51,27 @@ def determinant(matrix):
         raise ValueError("matrix must be a square matrix")
     if lm == 1 and len(matrix[0]) == 1:
         return matrix[0][0]
-    # Section 1: Establish n parameter and copy A
-    AM = copy_matrix(matrix)
 
-    # Section 2: Row manipulate A into an upper triangle matrix
-    for fd in range(lm):  # fd stands for focus diagonal
-        if AM[fd][fd] == 0:
-            AM[fd][fd] = 1.0e-18  # Cheating by adding zero + ~zero
-        for i in range(fd + 1, lm):  # skip row with fd in it.
-            crScaler = AM[i][fd] / AM[fd][fd]  # cr stands for "current row".
-            for j in range(lm):
-                # cr - crScaler * fdRow, one element at a time.
-                AM[i][j] = AM[i][j] - crScaler * AM[fd][j]
+    # Section 1: store indices in list for flexible row referencing
+    indices = list(range(len(matrix)))
 
-    # Section 3: Once AM is in upper triangle form ...
-    product = 1.0
-    for i in range(lm):
-        product *= AM[i][i]  # ... product of diagonals is determinant
+    # Section 2: when at 2x2 submatrices recursive calls end
+    if len(matrix) == 2 and len(matrix[0]) == 2:
+        val = matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1]
+        return val
 
-    return int(product)
+    # Section 3: define submatrix for focus column and call this function
+    total = 0
+    for fc in indices:  # for each focus column, find the submatrix ...
+        As = copy_matrix(matrix)  # make a copy, and ...
+        As = As[1:]  # ... remove the first row
+        height = len(As)
+
+        for i in range(height):  # for each remaining row of submatrix ...
+            As[i] = As[i][0:fc] + As[i][fc+1:]  # zero focus column elements
+
+        sign = (-1) ** (fc % 2)  # alternate signs for submatrix multiplier
+        sub_det = determinant(As)  # pass submatrix recursively
+        total += sign * matrix[0][fc] * sub_det  # total all returns from recursion
+
+    return total
