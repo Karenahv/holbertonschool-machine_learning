@@ -72,6 +72,7 @@ def determinant(matrix):
 
         sign = (-1) ** (fc % 2)  # alternate signs for submatrix multiplier
         sub_det = determinant(As)  # pass submatrix recursively
-        total += sign * matrix[0][fc] * sub_det  # total all returns from recursion
+        total += sign * matrix[0][fc] * sub_det
+        # total all returns from recursion
 
     return total
