@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Initialize t-SNE """
+"""Initialize t-SNE"""
 
 import numpy as np
 
@@ -25,10 +25,13 @@ def P_init(X, perplexity):
         H is the Shannon entropy for perplexity perplexity
     """
     n, d = X.shape
-    # (a-b)^2 = a^2 + b^2 - 2*a*b
-    x_sqr = np.sum(np.square(X), axis=1)
-    D = np.add(np.add(-2 * np.dot(X, X.T), x_sqr).T, x_sqr)
+    # (a-b)^2 = a^2 + b^2 - 2*a*b,
+    sum_X = np.sum(np.square(X), 1)
+    D = np.add(np.add(-2 * np.dot(X, X.T), sum_X).T, sum_X)
+    # suquared_d = sum_X + sum_X.T - 2*np.dot(X, X.T)
+
     P = np.zeros([n, n], dtype='float64')
     betas = np.ones([n, 1], dtype='float64')
     H = np.log2(perplexity)
+
     return D, P, betas, H
