@@ -26,12 +26,13 @@ def P_init(X, perplexity):
     """
     n, d = X.shape
     # (a-b)^2 = a^2 + b^2 - 2*a*b,
-    sum_X = np.sum(np.square(X), 1)
-    D = np.add(np.add(-2 * np.dot(X, X.T), sum_X).T, sum_X)
-    # suquared_d = sum_X + sum_X.T - 2*np.dot(X, X.T)
+    X_square = np.sum(np.square(X), axis=1)
+    XY = np.dot(X, X.T)
+    D = np.add(np.add((-2 * XY), X_square).T, X_square)
+    np.fill_diagonal(D, 0)
+    P = np.zeros((n, n))
 
-    P = np.zeros([n, n], dtype='float64')
-    betas = np.ones([n, 1], dtype='float64')
+    betas = np.ones((n, 1))
     H = np.log2(perplexity)
 
-    return D, P, betas, H
+    return (D, P, betas, H)
