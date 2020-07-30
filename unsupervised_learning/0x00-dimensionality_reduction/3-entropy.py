@@ -9,5 +9,4 @@ def HP(Di, beta):
     Pi = np.exp(-Di * beta) / np.sum(np.exp(-Di * beta))
     # Apply shannon entropy equation
     Hi = - np.sum(Pi * np.log2(Pi))
-
     return Hi, Pi
