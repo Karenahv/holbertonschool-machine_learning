@@ -20,12 +20,19 @@ def Q_affinities(Y):
     """
     n, ndim = Y.shape
     # (a-b)^2 = a^2 + b^2 - 2*a*b
-    sum_Y = np.sum(np.square(Y), axis=1)
-    num = -2. * np.dot(Y, Y.T)
-    num = 1. / (1. + np.add(np.add(num, sum_Y).T, sum_Y))
+    Y_square = np.sum(np.square(Y), axis=1)
+    XY = np.dot(Y, Y.T)
+    D = np.add(np.add((-2 * XY), Y_square).T, Y_square)
 
-    num[range(n), range(n)] = 0.
+    Q = np.zeros((n, n))
+    num = np.zeros((n, n))
+    for i in range(n):
+        Di = D[i].copy()
+        Di = np.delete(Di, i, axis=0)
+        numerator = (1 + Di) ** (-1)
+        numerator = np.insert(numerator, i, 0)
+        num[i] = numerator
 
-    # https://lvdmaaten.github.io/tsne/
-    Q = num / np.sum(num)
+    den = num.sum()
+    Q = num / den
     return Q, num
