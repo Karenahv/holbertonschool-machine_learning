@@ -33,6 +33,7 @@ def marginal(x, n, P, Pr):
         raise ValueError("All values in Pr must be in the range [0, 1]")
     if not np.isclose([np.sum(Pr)], [1])[0]:
         raise ValueError("Pr must sum to 1")
+
     # f = (n! / (x! * (n-x)!)) * (p ** x) * (1-p) ** (n-x)
     fact = np.math.factorial
     first_part = fact(n) / (fact(x) * fact(n - x))
@@ -40,3 +41,4 @@ def marginal(x, n, P, Pr):
     prior = likelihood * Pr
     marginal = np.sum(prior)
     return marginal
+
