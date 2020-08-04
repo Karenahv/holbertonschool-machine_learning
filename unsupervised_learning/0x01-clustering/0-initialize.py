@@ -24,7 +24,7 @@ def initialize(X, k):
         return None
     if type(k) != int or k <= 0 or k >= X.shape[0]:
         return None
-    m = np.shape(X)[0]
+    n, d = np.shape(X)
     cluster_centroids = np.random.uniform(np.amin(X, axis=0),
-                                          np.amax(X, axis=0), (k, m))
+                                          np.amax(X, axis=0), (k, d))
     return cluster_centroids
