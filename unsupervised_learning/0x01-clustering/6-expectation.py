@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Expectation"""
 
 import numpy as np
 pdf = __import__('5-pdf').pdf
