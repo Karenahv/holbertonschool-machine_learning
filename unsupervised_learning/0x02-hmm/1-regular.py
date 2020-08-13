@@ -62,6 +62,6 @@ def regular(P):
         q = np.c_[q, ones]
         QTQ = np.dot(q, q.T)
         bQT = np.ones(dim)
-        return np.vstack(np.linalg.solve(QTQ, bQT))
+        return np.column_stack(np.linalg.solve(QTQ, bQT))
     except Exception:
         return None
