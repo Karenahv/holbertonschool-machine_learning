@@ -83,5 +83,5 @@ def viterbi(Observation, Emission, Transition, Initial):
 
     P = np.amax(T1[:, y - 1], axis=0)
     P = np.amin(P)
-
-    return x, P
+    path = list(x)
+    return path, P
