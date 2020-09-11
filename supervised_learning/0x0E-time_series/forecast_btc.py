@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """ Time Series Forecasting for bitcoin"""
 
-
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
@@ -46,36 +45,37 @@ def forecast(data):
     # Fitting the RNN to the Training set
     regressor.fit(X_train, y_train, batch_size=5, epochs=100)
 
-    test_set = df_test.values[1:]
-    sc = MinMaxScaler()
-    inputs = np.reshape(df_test.values[0:len(df_test) - 1], (len(test_set), 1))
+    regressor.summary()
+
+    # Making the predictions
+    test_set = df_test.values
+    inputs = np.reshape(test_set, (len(test_set), 1))
     inputs = sc.transform(inputs)
     inputs = np.reshape(inputs, (len(inputs), 1, 1))
     predicted_BTC_price = regressor.predict(inputs)
     predicted_BTC_price = sc.inverse_transform(predicted_BTC_price)
 
     # Visualising the results
-    plt.figure(figsize=(25, 15), dpi=80, facecolor='w', edgecolor='k')
+    plt.figure(figsize=(15, 5), dpi=80, facecolor='w', edgecolor='k')
     ax = plt.gca()
     plt.plot(test_set, color='red', label='Real BTC Price')
     plt.plot(predicted_BTC_price, color='blue', label='Predicted BTC Price')
-    plt.title('BTC Price Prediction', fontsize=40)
+    plt.title('BTC Price Prediction', fontsize=14)
     df_test = df_test.reset_index()
     x = df_test.index
     labels = df_test['date']
     plt.xticks(x, labels, rotation='vertical')
     for tick in ax.xaxis.get_major_ticks():
-        tick.label1.set_fontsize(18)
+        tick.label1.set_fontsize(14)
     for tick in ax.yaxis.get_major_ticks():
-        tick.label1.set_fontsize(18)
-    plt.xlabel('Time', fontsize=40)
-    plt.ylabel('BTC Price(USD)', fontsize=40)
-    plt.legend(loc=2, prop={'size': 25})
+        tick.label1.set_fontsize(14)
+    plt.xlabel('Time', fontsize=14)
+    plt.ylabel('BTC Price(USD)', fontsize=14)
+    plt.legend(loc=2, prop={'size': 14})
     plt.show()
 
 
 if __name__ == '__main__':
-
     preprocess = __import__('preprocess_data').preprocessor
 
     data = preprocess('../input/coinbaseUSD_1-min_'
