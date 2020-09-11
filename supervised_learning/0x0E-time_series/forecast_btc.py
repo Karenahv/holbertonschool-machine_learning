@@ -33,7 +33,7 @@ def forecast(data):
     regressor = K.models.Sequential()
 
     # Adding the input layer and the LSTM layer
-    regressor.add(K.layers.LSTM(units=4, activation='sigmoid',
+    regressor.add(K.layers.LSTM(units=128, activation='sigmoid',
                                 input_shape=(None, 1)))
 
     # Adding the output layer
@@ -43,7 +43,7 @@ def forecast(data):
     regressor.compile(optimizer='adam', loss='mean_squared_error')
 
     # Fitting the RNN to the Training set
-    regressor.fit(X_train, y_train, batch_size=5, epochs=100)
+    regressor.fit(X_train, y_train, batch_size=5, epochs=1000)
 
     regressor.summary()
 
