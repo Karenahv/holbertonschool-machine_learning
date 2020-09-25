@@ -1,24 +1,32 @@
-#!usr/bin/env/python3
-"""class rnnEncoder"""
-
+#!/usr/bin/env python3
+""" RNN Encoder """
 import tensorflow as tf
 
 
-class RNNEncoder:
-    """Class rnnencoder"""
-
+class RNNEncoder(tf.keras.layers.Layer):
+    """ inherits from tensorflow.keras.layers.Layer to encode
+        for machine translation:
+    """
     def __init__(self, vocab, embedding, units, batch):
         """
-        :param vocab: is an integer representing
-         the size of the input vocabulary
-        :param embedding: is an integer representing
-         the dimensionality of the embedding vector
-        :param units: is an integer representing the
-        number of hidden units in the RNN cell
-        :param batch: is an integer representing
-         the batch size
+            - vocab is an integer representing the size of the input
+                vocabulary
+            - embedding is an integer representing the dimensionality
+                of the embedding vector
+            - units is an integer representing the number of hidden
+                units in the RNN cell
+            - batch is an integer representing the batch size
+            instance attributes:
+                batch - the batch size
+                units - the number of hidden units in the RNN cell
+                embedding - a keras Embedding layer that converts words from
+                    the vocabulary into an embedding vector
+                gru - a keras GRU layer with units units
+                    Should return both the full sequence of outputs as well
+                    as the last hidden state
+                    Recurrent weights should be initialized with
+                    glorot_uniform
         """
-
         super(RNNEncoder, self).__init__()
         self.batch = batch
         self.units = units
@@ -30,8 +38,10 @@ class RNNEncoder:
 
     def initialize_hidden_state(self):
         """
-        :return:a tensor of shape (batch, units)containing
-         the initialized hidden states
+            Initializes the hidden states for the RNN cell to a tensor
+                of zeros
+            Returns: a tensor of shape (batch, units)containing the
+                initialized hidden states
         """
         initializer = tf.keras.initializers.Zeros()
         values = initializer(shape=(self.batch, self.units))
@@ -39,17 +49,17 @@ class RNNEncoder:
 
     def call(self, x, initial):
         """
-        :param x:  is a tensor of shape (batch, input_seq_len)
-         containing the input to the encoder layer as word
-        indices within the vocabulary
-        :param initial: is a tensor of shape (batch, units)
-         containing the initial hidden state
-        :return: outputs, hidden
-        outputs is a tensor of shape (batch, input_seq_len,
-         units)containing the outputs of the encoder
-        hidden is a tensor of shape (batch, units)
-         containing the last hidden state of the encoder
+            x is a tensor of shape (batch, input_seq_len) containing the input
+                to the encoder layer as word indices within the vocabulary
+            initial is a tensor of shape (batch, units) containing the initial
+                hidden state
+            Returns: outputs, hidden
+                outputs is a tensor of shape (batch, input_seq_len, units)
+                    containing the outputs of the encoder
+                hidden is a tensor of shape (batch, units) containing the last
+                hidden state of the encoder
         """
+
         x = self.embedding(x)
         outputs, hidden = self.gru(x, initial_state=initial)
 
