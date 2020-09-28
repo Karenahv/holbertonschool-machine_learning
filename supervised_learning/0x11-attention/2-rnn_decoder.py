@@ -1,22 +1,28 @@
-#!usr/bin/env/python3
-"""
-class RNNDecoder
-"""
-
+#!/usr/bin/env python3
+""" RNN Decoder """
 import tensorflow as tf
 SelfAttention = __import__('1-self_attention').SelfAttention
 
 
-class RNNDecoder:
-    """
-    class RNNDecoder
-    """
+class RNNDecoder(tf.keras.layers.Layer):
+    """ decode for machine translation """
     def __init__(self, vocab, embedding, units, batch):
         """
-        :param vocab:
-        :param embedding:
-        :param units:
-        :param batch:
+            - vocab is an integer representing the size of the
+                output vocabulary
+            - embedding is an integer representing the dimensionality
+                of the embedding vector
+            - units is an integer representing the number of hidden units
+                in the RNN cell
+            - batch is an integer representing the batch size
+            Sets the following public instance attributes:
+                - embedding - a keras Embedding layer that converts words
+                    from the vocabulary into an embedding vector
+                - gru - a keras GRU layer with units units
+                    Should return both the full sequence of outputs as well
+                    as the last hidden state
+                    Recurrent weights should be initialized with glorot_uniform
+                - F - a Dense layer with vocab units
         """
         super(RNNDecoder, self).__init__()
         self.embedding = tf.keras.layers.Embedding(vocab, embedding)
